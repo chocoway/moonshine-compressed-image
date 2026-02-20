@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Chocoway\MoonshineCompressedImage\Fields;
 
-use Intervention\Image\ImageManager;
-use Intervention\Image\Drivers\Gd\Driver;
+use Chocoway\MoonshineCompressedImage\Applies\CompressedImageApply;
 use MoonShine\UI\Fields\Image;
 
 class CompressedImage extends Image
@@ -13,6 +14,12 @@ class CompressedImage extends Image
     protected bool $keepAspectRatio = false;
     protected string $compressFormat = 'jpg';
     protected int $compressQuality = 80;
+
+    protected function booted(): void
+    {
+        parent::booted();
+        $this->setApply(new CompressedImageApply());
+    }
 
     public function width(int $width): static
     {
@@ -44,37 +51,28 @@ class CompressedImage extends Image
         return $this;
     }
 
-    protected function store(mixed $file): string
+    public function getCompressWidth(): ?int
     {
-        $path = parent::store($file);
+        return $this->compressWidth;
+    }
 
-        $manager = new ImageManager(new Driver());
-        $fullPath = storage_path('app/public/' . $path);
+    public function getCompressHeight(): ?int
+    {
+        return $this->compressHeight;
+    }
 
-        $image = $manager->read($fullPath);
+    public function isKeepAspectRatio(): bool
+    {
+        return $this->keepAspectRatio;
+    }
 
-        if ($this->compressWidth || $this->compressHeight) {
-            if ($this->keepAspectRatio) {
-                $image->scaleDown(
-                    width: $this->compressWidth,
-                    height: $this->compressHeight
-                );
-            } else {
-                $image->resize(
-                    width: $this->compressWidth ?? $image->width(),
-                    height: $this->compressHeight ?? $image->height()
-                );
-            }
-        }
+    public function getCompressFormat(): string
+    {
+        return $this->compressFormat;
+    }
 
-        $newPath = preg_replace('/\.[^.]+$/', '.' . $this->compressFormat, $fullPath);
-        $image->toFile($newPath, quality: $this->compressQuality);
-
-        if ($newPath !== $fullPath) {
-            unlink($fullPath);
-            $path = preg_replace('/\.[^.]+$/', '.' . $this->compressFormat, $path);
-        }
-
-        return $path;
+    public function getCompressQuality(): int
+    {
+        return $this->compressQuality;
     }
 }
