@@ -95,7 +95,8 @@ final class CompressedImageApply implements ApplyContract
 
         $format = $field->getCompressFormat();
         $newFullPath = preg_replace('/\.[^.]+$/', '.' . $format, $fullPath);
-        $image->toFile($newFullPath, quality: $field->getCompressQuality());
+        $image->save($newFullPath, quality: $field->getCompressQuality());
+
 
         if ($newFullPath !== $fullPath) {
             unlink($fullPath);
