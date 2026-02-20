@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Chocoway\MoonshineCompressedImage\Fields;
 
-use Chocoway\MoonshineCompressedImage\Applies\CompressedImageApply;
 use MoonShine\UI\Fields\Image;
 
 class CompressedImage extends Image
@@ -14,12 +13,6 @@ class CompressedImage extends Image
     protected bool $keepAspectRatio = false;
     protected string $compressFormat = 'jpg';
     protected int $compressQuality = 80;
-
-    protected function booted(): void
-    {
-        parent::booted();
-        $this->setApply(new CompressedImageApply());
-    }
 
     public function width(int $width): static
     {
