@@ -82,9 +82,14 @@ final class CompressedImageApply implements ApplyContract
         $manager = new ImageManager(new Driver());
         $image = $manager->read($fullPath);
 
-        if ($field->getCompressWidth() || $field->getCompressHeight()) {
+        if ($modifier = $field->getModifier()) {
+            $image = $modifier($image);
+        } elseif ($field->getCompressWidth() || $field->getCompressHeight()) {
             if ($field->isKeepAspectRatio()) {
-                $image->scaleDown(width: $field->getCompressWidth(), height: $field->getCompressHeight());
+                $image->scaleDown(
+                    width: $field->getCompressWidth(),
+                    height: $field->getCompressHeight()
+                );
             } else {
                 $image->resize(
                     width: $field->getCompressWidth() ?? $image->width(),
@@ -96,7 +101,6 @@ final class CompressedImageApply implements ApplyContract
         $format = $field->getCompressFormat();
         $newFullPath = preg_replace('/\.[^.]+$/', '.' . $format, $fullPath);
         $image->save($newFullPath, quality: $field->getCompressQuality());
-
 
         if ($newFullPath !== $fullPath) {
             unlink($fullPath);
