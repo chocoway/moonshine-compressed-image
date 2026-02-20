@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Chocoway\MoonshineCompressedImage\Fields;
 
-use Closure;
 use MoonShine\UI\Fields\Image;
 
 class CompressedImage extends Image
@@ -14,7 +13,6 @@ class CompressedImage extends Image
     protected bool $keepAspectRatio = false;
     protected string $compressFormat = 'jpg';
     protected int $compressQuality = 80;
-    protected ?Closure $modifier = null;
 
     public function width(int $width): static
     {
@@ -46,12 +44,6 @@ class CompressedImage extends Image
         return $this;
     }
 
-    public function modify(Closure $callback): static
-    {
-        $this->modifier = $callback;
-        return $this;
-    }
-
     public function getCompressWidth(): ?int
     {
         return $this->compressWidth;
@@ -75,10 +67,5 @@ class CompressedImage extends Image
     public function getCompressQuality(): int
     {
         return $this->compressQuality;
-    }
-
-    public function getModifier(): ?Closure
-    {
-        return $this->modifier;
     }
 }
