@@ -12,6 +12,13 @@
             "Chocoway\\MoonshineCompressedImage\\": "src/"
         }
     },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Chocoway\\MoonshineCompressedImage\\Providers\\CompressedImageServiceProvider"
+            ]
+        }
+    },
     "minimum-stability": "stable",
     "prefer-stable": true
 }
