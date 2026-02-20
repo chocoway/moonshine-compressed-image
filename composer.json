@@ -1,0 +1,17 @@
+{
+    "name": "chocoway/moonshine-compressed-image",
+    "description": "Compressed Image field for MoonShine",
+    "type": "library",
+    "license": "MIT",
+    "require": {
+        "php": "^8.2",
+        "intervention/image": "^3.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Chocoway\\MoonshineCompressedImage\\": "src/"
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
