@@ -18,13 +18,9 @@ use Chocoway\MoonshineCompressedImage\Fields\CompressedImage;
 
 final class CompressedImageApply implements ApplyContract
 {
-    /**
-     * @param File $field
-     */
     public function apply(FieldContract $field): Closure
     {
         return function (mixed $item) use ($field): mixed {
-            /** @var Model $item */
             $requestValue = $field->getRequestValue();
             $remainingValues = $field->getRemainingValues();
             data_forget($item, $field->getHiddenRemainingValuesKey());
@@ -36,10 +32,7 @@ final class CompressedImageApply implements ApplyContract
                     foreach ($requestValue as $file) {
                         $paths[] = $this->store($field, $file);
                     }
-                    $newValue = $newValue->merge($paths)
-                        ->values()
-                        ->unique()
-                        ->toArray();
+                    $newValue = $newValue->merge($paths)->values()->unique()->toArray();
                 } else {
                     $newValue = $this->store($field, $requestValue);
                     $field->setRemainingValues([]);
@@ -51,9 +44,7 @@ final class CompressedImageApply implements ApplyContract
             }
 
             $field->removeExcludedFiles(
-                $field->getCustomName() !== null || $field->isKeepOriginalFileName()
-                    ? $newValue
-                    : null,
+                $field->getCustomName() !== null || $field->isKeepOriginalFileName() ? $newValue : null,
             );
 
             return data_set($item, $field->getColumn(), $newValue);
@@ -69,17 +60,9 @@ final class CompressedImageApply implements ApplyContract
         }
 
         if ($field->isKeepOriginalFileName()) {
-            $path = $file->storeAs(
-                $field->getDir(),
-                $file->getClientOriginalName(),
-                $field->getOptions(),
-            );
+            $path = $file->storeAs($field->getDir(), $file->getClientOriginalName(), $field->getOptions());
         } elseif (! \is_null($field->getCustomName())) {
-            $path = $file->storeAs(
-                $field->getDir(),
-                \call_user_func($field->getCustomName(), $file, $field),
-                $field->getOptions(),
-            );
+            $path = $file->storeAs($field->getDir(), \call_user_func($field->getCustomName(), $file, $field), $field->getOptions());
         } else {
             if (! $path = $file->store($field->getDir(), $field->getOptions())) {
                 throw FileFieldException::failedSave();
@@ -101,10 +84,7 @@ final class CompressedImageApply implements ApplyContract
 
         if ($field->getCompressWidth() || $field->getCompressHeight()) {
             if ($field->isKeepAspectRatio()) {
-                $image->scaleDown(
-                    width: $field->getCompressWidth(),
-                    height: $field->getCompressHeight()
-                );
+                $image->scaleDown(width: $field->getCompressWidth(), height: $field->getCompressHeight());
             } else {
                 $image->resize(
                     width: $field->getCompressWidth() ?? $image->width(),
@@ -125,4 +105,3 @@ final class CompressedImageApply implements ApplyContract
         return $path;
     }
 }
-EOF
