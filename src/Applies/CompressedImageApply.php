@@ -110,7 +110,7 @@ final class CompressedImageApply implements ApplyContract
                 width: $field->getThumbWidth(),
                 height: $field->getThumbHeight()
             );
-            $thumbFullPath = preg_replace('/(\.[^.]+)$/', '_thumb$1', $newFullPath);
+            $thumbFullPath = dirname($newFullPath) . '/thumb_' . basename($newFullPath);
             $thumbImage->save($thumbFullPath, quality: $field->getCompressQuality());
         }
 
