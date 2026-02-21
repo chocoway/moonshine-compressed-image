@@ -107,4 +107,22 @@ class CompressedImage extends Image
 
         return $data;
     }
+    public function removeExcludedFiles(null|array|string $newValue = null): void
+{
+    if ($this->hasThumb()) {
+        $values = collect($this->toValue(withDefault: false));
+        $remaining = $this->getRemainingValues();
+
+        $values->diff($remaining)->each(function (?string $file) use ($newValue): void {
+            $old = array_filter(\is_array($newValue) ? $newValue : [$newValue]);
+
+            if ($file !== null && ! \in_array($file, $old, true)) {
+                $thumbFile = dirname($file) . '/thumb_' . basename($file);
+                $this->deleteStorageFile($thumbFile);
+            }
+        });
+    }
+
+    parent::removeExcludedFiles($newValue);
+}
 }
