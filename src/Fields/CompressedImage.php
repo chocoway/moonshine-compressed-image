@@ -13,6 +13,8 @@ class CompressedImage extends Image
     protected bool $keepAspectRatio = false;
     protected string $compressFormat = 'jpg';
     protected int $compressQuality = 80;
+    protected ?int $thumbWidth = null;
+    protected ?int $thumbHeight = null;
 
     public function width(int $width): static
     {
@@ -44,6 +46,13 @@ class CompressedImage extends Image
         return $this;
     }
 
+    public function thumb(int $width, int $height): static
+    {
+        $this->thumbWidth = $width;
+        $this->thumbHeight = $height;
+        return $this;
+    }
+
     public function getCompressWidth(): ?int
     {
         return $this->compressWidth;
@@ -67,5 +76,20 @@ class CompressedImage extends Image
     public function getCompressQuality(): int
     {
         return $this->compressQuality;
+    }
+
+    public function getThumbWidth(): ?int
+    {
+        return $this->thumbWidth;
+    }
+
+    public function getThumbHeight(): ?int
+    {
+        return $this->thumbHeight;
+    }
+
+    public function hasThumb(): bool
+    {
+        return $this->thumbWidth !== null || $this->thumbHeight !== null;
     }
 }

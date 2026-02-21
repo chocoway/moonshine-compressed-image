@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Chocoway\MoonshineCompressedImage\Applies;
 
 use Closure;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
 use Intervention\Image\Drivers\Gd\Driver;
@@ -84,7 +83,10 @@ final class CompressedImageApply implements ApplyContract
 
         if ($field->getCompressWidth() || $field->getCompressHeight()) {
             if ($field->isKeepAspectRatio()) {
-                $image->scaleDown(width: $field->getCompressWidth(), height: $field->getCompressHeight());
+                $image->scaleDown(
+                    width: $field->getCompressWidth(),
+                    height: $field->getCompressHeight()
+                );
             } else {
                 $image->resize(
                     width: $field->getCompressWidth() ?? $image->width(),
@@ -97,10 +99,19 @@ final class CompressedImageApply implements ApplyContract
         $newFullPath = preg_replace('/\.[^.]+$/', '.' . $format, $fullPath);
         $image->save($newFullPath, quality: $field->getCompressQuality());
 
-
         if ($newFullPath !== $fullPath) {
             unlink($fullPath);
             $path = preg_replace('/\.[^.]+$/', '.' . $format, $path);
+        }
+
+        if ($field->hasThumb()) {
+            $thumbImage = $manager->read($newFullPath);
+            $thumbImage->scaleDown(
+                width: $field->getThumbWidth(),
+                height: $field->getThumbHeight()
+            );
+            $thumbFullPath = preg_replace('/(\.[^.]+)$/', '_thumb$1', $newFullPath);
+            $thumbImage->save($thumbFullPath, quality: $field->getCompressQuality());
         }
 
         return $path;
