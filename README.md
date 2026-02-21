@@ -1,6 +1,6 @@
 # MoonShine Compressed Image
 
-A custom image field for [MoonShine](https://getmoonshine.app) admin panel with built-in image compression, resizing, and format conversion powered by [Intervention Image v3](https://image.intervention.io/v3).
+A custom image field for [MoonShine](https://getmoonshine.app) admin panel with built-in image compression, resizing, thumbnail generation and format conversion powered by [Intervention Image v3](https://image.intervention.io/v3).
 
 ## Requirements
 
@@ -26,6 +26,7 @@ CompressedImage::make('Photo', 'photo')
     ->aspectRatio()
     ->format('webp')
     ->quality(80)
+    ->thumb(200, 200)
 ```
 
 ## Available Methods
@@ -37,6 +38,7 @@ CompressedImage::make('Photo', 'photo')
 | `->aspectRatio()` | Keep aspect ratio when resizing |
 | `->format(string $format)` | Output format: `jpg`, `png`, `webp`, `gif` |
 | `->quality(int $quality)` | Compression quality from 1 to 100 (default: 80) |
+| `->thumb(int $width, int $height)` | Generate a thumbnail alongside the original |
 
 ## Examples
 
@@ -49,6 +51,27 @@ CompressedImage::make('Photo', 'photo')
     ->quality(80)
 ```
 
+**With thumbnail:**
+```php
+CompressedImage::make('Photo', 'photo')
+    ->width(1000)
+    ->aspectRatio()
+    ->format('webp')
+    ->quality(80)
+    ->thumb(200, 200)
+```
+
+Thumbnail is saved alongside the original with a `thumb_` prefix:
+- Original: `images/photo.webp`
+- Thumbnail: `images/thumb_photo.webp`
+
+**Convert to WebP without resizing:**
+```php
+CompressedImage::make('Photo', 'photo')
+    ->format('webp')
+    ->quality(75)
+```
+
 **Strict resize to exact dimensions:**
 ```php
 CompressedImage::make('Photo', 'photo')
@@ -56,13 +79,6 @@ CompressedImage::make('Photo', 'photo')
     ->height(500)
     ->format('jpg')
     ->quality(90)
-```
-
-**Convert to WebP without resizing:**
-```php
-CompressedImage::make('Photo', 'photo')
-    ->format('webp')
-    ->quality(75)
 ```
 
 ## License
