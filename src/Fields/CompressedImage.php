@@ -92,4 +92,19 @@ class CompressedImage extends Image
     {
         return $this->thumbWidth !== null || $this->thumbHeight !== null;
     }
+    protected function resolveAfterDestroy(mixed $data): mixed
+    {
+        $data = parent::resolveAfterDestroy($data);
+
+        if ($this->hasThumb() && !blank($this->toValue())) {
+            $values = $this->isMultiple() ? $this->toValue() : [$this->toValue()];
+
+            foreach ($values as $file) {
+                $thumbFile = dirname($file) . '/thumb_' . basename($file);
+                $this->deleteStorageFile($thumbFile);
+            }
+        }
+
+        return $data;
+    }
 }
