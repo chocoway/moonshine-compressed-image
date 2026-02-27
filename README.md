@@ -32,7 +32,7 @@ CompressedImage::make('Photo', 'photo')
 ## Available Methods
 
 | Method | Description |
-|---|---|
+|--------|-------------|
 | `->width(int $width)` | Set max width in pixels |
 | `->height(int $height)` | Set max height in pixels |
 | `->aspectRatio()` | Keep aspect ratio when resizing |
@@ -43,6 +43,7 @@ CompressedImage::make('Photo', 'photo')
 ## Examples
 
 **Resize with aspect ratio (recommended):**
+
 ```php
 CompressedImage::make('Photo', 'photo')
     ->width(1000)
@@ -52,6 +53,7 @@ CompressedImage::make('Photo', 'photo')
 ```
 
 **With thumbnail:**
+
 ```php
 CompressedImage::make('Photo', 'photo')
     ->width(1000)
@@ -62,10 +64,12 @@ CompressedImage::make('Photo', 'photo')
 ```
 
 Thumbnail is saved alongside the original with a `thumb_` prefix:
+
 - Original: `images/photo.webp`
 - Thumbnail: `images/thumb_photo.webp`
 
 **Convert to WebP without resizing:**
+
 ```php
 CompressedImage::make('Photo', 'photo')
     ->format('webp')
@@ -73,6 +77,7 @@ CompressedImage::make('Photo', 'photo')
 ```
 
 **Strict resize to exact dimensions:**
+
 ```php
 CompressedImage::make('Photo', 'photo')
     ->width(1000)
@@ -80,6 +85,24 @@ CompressedImage::make('Photo', 'photo')
     ->format('jpg')
     ->quality(90)
 ```
+
+## Compatibility
+
+`CompressedImage` extends the standard MoonShine `Image` field, so all built-in `File` and `Image` methods are fully supported:
+
+```php
+CompressedImage::make('Photo', 'photo')
+    ->width(1000)
+    ->format('webp')
+    ->quality(80)
+    ->disk('s3')               // custom filesystem disk
+    ->dir('uploads/photos')    // storage subdirectory
+    ->multiple()               // upload multiple images
+    ->removable()              // allow deleting images
+    ->keepOriginalFileName()   // preserve original filename
+```
+
+See the MoonShine docs for the full list of available [File](https://getmoonshine.app/en/docs/4.x/fields/file) and [Image](https://getmoonshine.app/en/docs/4.x/fields/image) methods.
 
 ## License
 
